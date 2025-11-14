@@ -28,3 +28,15 @@ void insert(TrieNode* root, const string& word){
 
     node->isEnd = true;
 }
+
+bool search(TrieNode* root, const string& word) {
+    TrieNode* node = root;
+
+    for (int i = 0; i < word.size(); i++) {
+        if (node->children[i] == nullptr)
+            return false;
+        node = node->children[i];
+    }
+
+    return node->isEnd;
+}
