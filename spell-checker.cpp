@@ -99,3 +99,20 @@ bool remove(TrieNode* node, const string& word, int depth = 0) {
     return false;
 }
 
+int main() {
+    TrieNode* root = new TrieNode();
+
+    insert(root, "apple");
+    insert(root, "app");
+    insert(root, "bat");
+
+    cout << "Search apple: " << search(root, "apple") << endl;
+    cout << "Search app: " << search(root, "app") << endl;
+
+    remove(root, "apple");
+    cout << "After removing apple, search apple: " << search(root, "apple") << endl;
+    cout << "Search app (should still exist): " << search(root, "app") << endl;
+
+    return 0;
+}
+
