@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -117,6 +118,23 @@ string checkWord(TrieNode* root, const string& word) {
     } else {
         return word + " is incorrect. Suggestions: ...";
     }
+}
+
+vector<string> getSuggestions(TrieNode* root, const string& word) {
+    vector<string> suggestions;
+    string alphabets = "abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < word.size(); i++) {
+        string temp = word;
+        for (int j = 0; j < alphabets.size(); j++) {
+            char newChar = alphabets[j];
+            temp[i] = newChar;
+            if (search(root, temp) && temp != word) {
+                suggestions.push_back(temp);
+            }
+        }
+    }
+    return suggestions;
 }
 
 int main() {
