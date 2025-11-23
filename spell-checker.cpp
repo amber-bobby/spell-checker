@@ -1,6 +1,9 @@
 //Amber Gill
+
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -16,6 +19,15 @@ struct TrieNode{
         
     }
 };
+
+void loadDictionary(TrieNode* root, const string& filename) {
+    ifstream file(filename);
+    string word;
+    while (file >> word) {
+        insert(root, word);
+    }
+    file.close();
+}
 
 void insert(TrieNode* root, const string& word){
     TrieNode* node = root;

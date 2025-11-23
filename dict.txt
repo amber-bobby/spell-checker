@@ -1,0 +1,8 @@
+apple
+app
+bat
+ball
+cat
+cap
+dog
+door
