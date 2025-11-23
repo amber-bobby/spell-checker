@@ -6,3 +6,5 @@ cat
 cap
 dog
 door
+blue
+yellow

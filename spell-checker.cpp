@@ -23,7 +23,7 @@ struct TrieNode{
 
 
 
-void insert(TrieNode* root, const string& word){
+void insert(TrieNode* root, const string& word, bool writeToFile = true){
     TrieNode* node = root;
 
     for (int i = 0; i < word.size(); i++) {
@@ -33,6 +33,16 @@ void insert(TrieNode* root, const string& word){
     node = node->children[index];
     }
     node->isEnd = true;
+
+     if (writeToFile) {
+        ofstream file("dict.txt", ios::app);
+        if (file.is_open()) {
+            file << word << "\n";
+            file.close();
+        } else {
+            cout << "Error: Could not open dictionary.txt\n";
+        }
+    }
 }
 
 bool search(TrieNode* root, const string& word) {
@@ -104,11 +114,41 @@ bool remove(TrieNode* node, const string& word, int depth = 0) {
 
     return false;
 }
+
+bool removeWord(TrieNode* root, const string& word) {
+    if (!search(root, word)) {
+        cout << "Word not found.\n";
+        return false;
+    }
+
+    remove(root, word, 0);
+
+    ifstream in("dict.txt");
+    vector<string> words;
+    string w;
+
+    while (in >> w) {
+        if (w != word)
+            words.push_back(w);
+    }
+    in.close();
+
+    ofstream out("dict.txt");
+    for (auto& x : words)
+        out << x << "\n";
+    out.close();
+
+    cout << "Word removed from Trie and dictionary.\n";
+    return true;
+}
+
+
+
 void loadDictionary(TrieNode* root, const string& filename) {
     ifstream file(filename);
     string word;
     while (file >> word) {
-        insert(root, word);
+        insert(root, word, false);
     }
     file.close();
 }
@@ -180,7 +220,7 @@ int main() {
                 cout << "Enter word to insert: ";
                 cin >> word;
                 insert(root, word);
-                cout << word << " inserted.\n";
+                cout << word << " inserted and saved to dictionary.\n";
                 break;
 
             case 2:
@@ -195,17 +235,27 @@ int main() {
             case 3:
                 cout << "Enter word to remove: ";
                 cin >> word;
-                if (remove(root, word))
+                if (removeWord(root, word))
                     cout << word << " removed from the trie.\n";
                 else
                     cout << word << " not found or cannot remove.\n";
                 break;
             
             case 4:
-                cout << "Enter word to get suggestions: ";
+               { cout << "Enter word to get suggestions: ";
                 cin >> word;
-                getSuggestions(root, word);
-                break;
+                    vector<string> suggestions = getSuggestions(root, word); // Make sure your function returns vector<string>
+
+                if (suggestions.empty()) {
+                    cout << "No suggestions found.\n";
+                } else {
+                    cout << "Suggestions: ";
+                    for (int i = 0; i < suggestions.size(); i++) {
+                        cout << suggestions[i] << " ";
+                    }
+                    cout << endl;
+                }
+                break;}
 
             case 5:
                 displayAllWords(root);  
