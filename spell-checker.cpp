@@ -140,16 +140,23 @@ vector<string> getSuggestions(TrieNode* root, const string& word) {
 int main() {
     TrieNode* root = new TrieNode();
 
-    insert(root, "apple");
-    insert(root, "app");
-    insert(root, "bat");
+    loadDictionary(root, "dict.txt");
 
-    cout << "Search apple: " << search(root, "apple") << endl;
-    cout << "Search app: " << search(root, "app") << endl;
+    string input;
+    cout << "Enter a word: ";
+    cin >> input;
 
-    remove(root, "apple");
-    cout << "After removing apple, search apple: " << search(root, "apple") << endl;
-    cout << "Search app (should still exist): " << search(root, "app") << endl;
+    if (search(root, input)) {
+        cout << input << " is correct." << endl;
+    } else {
+        cout << input << " is incorrect. Suggestions: ";
+        vector<string> suggestions = getSuggestions(root, input);
+        for (int i = 0; i < suggestions.size(); i++) {
+            string s = suggestions[i];
+            cout << s << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 }
