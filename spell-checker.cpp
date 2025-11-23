@@ -111,6 +111,14 @@ bool remove(TrieNode* node, const string& word, int depth = 0) {
     return false;
 }
 
+string checkWord(TrieNode* root, const string& word) {
+    if (search(root, word)) {
+        return word + " is correct.";
+    } else {
+        return word + " is incorrect. Suggestions: ...";
+    }
+}
+
 int main() {
     TrieNode* root = new TrieNode();
 
