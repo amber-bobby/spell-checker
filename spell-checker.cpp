@@ -21,14 +21,7 @@ struct TrieNode{
     }
 };
 
-void loadDictionary(TrieNode* root, const string& filename) {
-    ifstream file(filename);
-    string word;
-    while (file >> word) {
-        insert(root, word);
-    }
-    file.close();
-}
+
 
 void insert(TrieNode* root, const string& word){
     TrieNode* node = root;
@@ -111,6 +104,14 @@ bool remove(TrieNode* node, const string& word, int depth = 0) {
 
     return false;
 }
+void loadDictionary(TrieNode* root, const string& filename) {
+    ifstream file(filename);
+    string word;
+    while (file >> word) {
+        insert(root, word);
+    }
+    file.close();
+}
 
 string checkWord(TrieNode* root, const string& word) {
     if (search(root, word)) {
@@ -137,25 +138,86 @@ vector<string> getSuggestions(TrieNode* root, const string& word) {
     return suggestions;
 }
 
+void displayAllWords(TrieNode* node, string currentWord = "") {
+    if (node == nullptr) return;
+
+    if (node->isEnd) {
+        cout << currentWord << endl;
+    }
+
+    for (int i = 0; i < 26; i++) {
+        if (node->children[i] != nullptr) {
+            char nextChar = 'a' + i;
+            displayAllWords(node->children[i], currentWord + nextChar);
+        }
+    }
+}
+
+
 int main() {
     TrieNode* root = new TrieNode();
 
     loadDictionary(root, "dict.txt");
 
-    string input;
-    cout << "Enter a word: ";
-    cin >> input;
+    int choice;
+    string word;
 
-    if (search(root, input)) {
-        cout << input << " is correct." << endl;
-    } else {
-        cout << input << " is incorrect. Suggestions: ";
-        vector<string> suggestions = getSuggestions(root, input);
-        for (int i = 0; i < suggestions.size(); i++) {
-            string s = suggestions[i];
-            cout << s << " ";
+    cout << "Interactive Trie Spell Checker\n";
+
+    while (true) {
+        cout << "\nMenu:\n";
+        cout << "1. Insert a word\n";
+        cout << "2. Search for a word\n";
+        cout << "3. Remove a word\n";
+        cout << "4. Suggested corrections for a word\n";
+        cout << "5. Display all words\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter word to insert: ";
+                cin >> word;
+                insert(root, word);
+                cout << word << " inserted.\n";
+                break;
+
+            case 2:
+                cout << "Enter word to search: ";
+                cin >> word;
+                if (search(root, word))
+                    cout << word << " exists in the trie.\n";
+                else
+                    cout << word << " not found.\n";
+                break;
+
+            case 3:
+                cout << "Enter word to remove: ";
+                cin >> word;
+                if (remove(root, word))
+                    cout << word << " removed from the trie.\n";
+                else
+                    cout << word << " not found or cannot remove.\n";
+                break;
+            
+            case 4:
+                cout << "Enter word to get suggestions: ";
+                cin >> word;
+                getSuggestions(root, word);
+                break;
+
+            case 5:
+                displayAllWords(root);  
+                break;
+
+            case 6:
+                cout << "Exiting program.\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice. Try again.\n";
         }
-        cout << endl;
     }
 
     return 0;
